@@ -1,0 +1,100 @@
+body {
+    background-color: #0b0909;
+    font-family: Arial, sans-serif, poppins;
+    color: #e4dfdf;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 15px;
+    margin: 20px;
+}
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    position: center;
+}
+
+.nav-links a:hover {
+    color: #f0a500;
+}
+
+main {
+    padding: 50px 20px;
+}
+
+h1, h2 {
+    color: #f0a500;
+    text-shadow: 0 0 10px rgba(240, 165, 0, 0.5);
+}
+
+ul {
+    list-style: disc;
+    margin-left: 20px;
+}
+
+footer {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping of footer content if needed */
+    justify-content: space-around; /* Space out footer content */
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 15px;
+    margin: 20px;
+}
+
+/* Styles for social media icons in the footer */
+.social-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 15px; /* Space between icons */
+}
+
+.social-links li {
+    margin: 0;
+}
+
+.social-links img {
+    width: 24px; /* Adjust size as needed */
+    height: 24px; /* Adjust size as needed */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.social-links a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.social-links img:hover {
+    opacity: 0.8; /* Slightly dim the icon on hover */
+    transform: scale(1.1); /* Slightly increase the size on hover */
+}
