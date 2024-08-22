@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 30px;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="url"],
+        textarea {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        textarea {
+            resize: vertical;
+        }
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .alert {
+            color: #d9534f;
+            text-align: center;
+        }
+        .project-list {
+            margin-top: 20px;
+        }
+        .project-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .project-item button {
+            background-color: #dc3545;
+        }
+        .project-item button:hover {
+            background-color: #c82333;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+
+    <form id="project-form">
+        <label for="title">Project Title:</label>
+        <input type="text" id="title" name="title" required><br>
+
+        <label for="description">Project Description:</label>
+        <textarea id="description" name="description" rows="4" required></textarea><br>
+
+        <label for="image">Project Image URL:</label>
+        <input type="url" id="image" name="image" required><br>
+
+        <button type="submit">Add Project</button>
+        <div id="error-message"></div>
+    </form>
+
+    <div id="project-list">
+        <h2>Existing Projects</h2>
+        <!-- Projects will be displayed here -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+            }
+
+            const fetchProjects = async () => {
+                try {
+                    const response = await fetch('http://localhost:3000/projects', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    const projects = await response.json();
+
+                    const projectList = document.getElementById('project-list');
+                    projectList.innerHTML = '<h2>Existing Projects</h2>';
+
+                    projects.forEach(project => {
+                        const projectItem = document.createElement('div');
+                        projectItem.innerHTML = `
+                            <strong>${project.title}</strong>
+                            <p>${project.description}</p>
+                            <img src="${project.imageUrl}" alt="${project.title}" style="max-width: 100px; max-height: 100px;">
+                            <button onclick="deleteProject('${project.id}')">Delete</button>
+                        `;
+                        projectList.appendChild(projectItem);
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            };
+
+            fetchProjects();
+
+            document.getElementById('project-form').addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const title = document.getElementById('title').value;
+                const description = document.getElementById('description').value;
+                const image = document.getElementById('image').value;
+
+                try {
+                    const response = await fetch('http://localhost:3000/projects', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ title, description, imageUrl: image })
+                    });
+
+                    if (response.ok) {
+                        fetchProjects();
+                    } else {
+                        const errorData = await response.json();
+                        document.getElementById('error-message').textContent = errorData.message;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+
+            window.deleteProject = async (id) => {
+                try {
+                    const response = await fetch(`http://localhost:3000/projects/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        fetchProjects();
+                    } else {
+                        console.error('Failed to delete project');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            };
+        });
+    </script>
+</body>
+</html>
